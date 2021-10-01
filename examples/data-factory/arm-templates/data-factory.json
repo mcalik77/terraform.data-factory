@@ -1,0 +1,66 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "armEndpoint": {
+      "type": "string",
+      "metadata": {
+        "description": "Endpoint URL of the ARM template storage account."
+      }
+    },
+    "sasToken": {
+      "type": "string",
+      "metadata": {
+        "description": "Shared access signature (SAS) token used to fetch uploaded ARM templates."
+      }
+    },
+    "dataFactory": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the data factory to deploy ARM templates."
+      }
+    },
+    "keyVaultName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the key vault."
+      }
+    },
+    "keyVaultBaseUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Base URL of the key vault."
+      }
+    }
+  },
+  "variables": {
+    "deployment": {
+      "apiVersion": "[providers('Microsoft.Resources', 'deployments').apiVersions[0]]"
+    },
+    "linkedTemplates": {
+      "keyVault": "[concat(parameters('armEndpoint'), 'key-vault.json', parameters('sasToken'))]"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables('deployment').apiVersion]",
+      "name": "keyVault",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri":"[variables('linkedTemplates').keyVault]",
+          "contentVersion":"1.0.0.0"
+        },
+        "parameters": {
+          "dataFactory": {
+            "value": "[parameters('dataFactory')]"
+          },
+          "keyVaultBaseUrl": {
+            "value": "[parameters('keyVaultBaseUrl')]"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dataFactory": {
+      "type": "string"
+    },
+    "irName": {
+      "type": "string"
+    }
+  },
+  "resources": [],
+  "outputs": {
+    "integrationRuntimeKey": {
+      "type": "string",
+      "value": "[string(listAuthKeys(resourceId('Microsoft.DataFactory/factories/integrationruntimes', parameters('dataFactory'), parameters('irName')), providers('Microsoft.DataFactory', 'factories').apiVersions[0]).authKey1)]"
+    }
+  }
+}

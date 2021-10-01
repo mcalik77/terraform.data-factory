@@ -1,0 +1,34 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "dataFactory": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the data factory to deploy ARM templates."
+      }
+    },
+    "integrationRuntime": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the integration runtime."
+      }
+    }
+  },
+  "variables": {
+    "integrationRuntime": {
+      "name": "[concat(parameters('dataFactory'), '/', parameters('integrationRuntime'))]",
+      "apiVersion": "[providers('Microsoft.DataFactory', 'factories').apiVersions[0]]"
+    }
+  },
+  "resources": [
+    {
+      "name": "[variables('integrationRuntime').name]",
+      "type": "Microsoft.DataFactory/factories/integrationRuntimes",
+      "apiVersion": "[variables('integrationRuntime').apiVersion]",
+      "properties": {
+        "type": "SelfHosted"
+      }
+    }
+  ]
+}
